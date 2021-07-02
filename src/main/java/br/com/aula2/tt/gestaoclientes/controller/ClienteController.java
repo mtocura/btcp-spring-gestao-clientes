@@ -36,7 +36,7 @@ public class ClienteController {
     public ResponseEntity<?> createClient(@RequestBody ClienteDTO clienteDTO, UriComponentsBuilder uriBuilder) {
         Cliente cliente = clienteDAO.addCliente(clienteDTO);
 
-        URI uri = uriBuilder.path("/aula2/tt/clientes/{id}").buildAndExpand(cliente.getId()).toUri();
+        URI uri = uriBuilder.path("/aula2/tt/clientes/{id}").buildAndExpand(cliente.getCpf()).toUri();
 
         return ResponseEntity.created(uri).build();
     }
