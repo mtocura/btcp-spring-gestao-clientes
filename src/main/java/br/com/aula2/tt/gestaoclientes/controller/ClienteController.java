@@ -2,6 +2,7 @@ package br.com.aula2.tt.gestaoclientes.controller;
 
 import br.com.aula2.tt.gestaoclientes.dao.ClienteDAO;
 import br.com.aula2.tt.gestaoclientes.dto.ClienteDTO;
+import br.com.aula2.tt.gestaoclientes.dto.ClienteResponseDTO;
 import br.com.aula2.tt.gestaoclientes.entities.Cliente;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,20 +21,9 @@ public class ClienteController {
         return ResponseEntity.ok(clienteDAO.findAll());
     }
 
-    @GetMapping("/clientes/{id}")
-    public ResponseEntity<?> getPedidosClienteById(@PathVariable long id) {
-        ClienteDTO cliente = clienteDAO.findClient(id);
-
-        if(cliente != null) {
-            return ResponseEntity.ok(cliente);
-        }
-
-        return ResponseEntity.badRequest().build();
-    }
-
     @GetMapping("/clientes/{cpf}")
-    public ResponseEntity<?> getPedidosClienteById(@PathVariable String cpf) {
-        ClienteDTO cliente = clienteDAO.findClient(cpf);
+    public ResponseEntity<?> getPedidosClienteByCPF(@PathVariable String cpf) {
+        ClienteResponseDTO cliente = clienteDAO.findClient(cpf);
 
         if(cliente != null) {
             return ResponseEntity.ok(cliente);
