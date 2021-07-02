@@ -1,7 +1,10 @@
 package br.com.aula2.tt.gestaoclientes.dao;
 
-import br.com.aula2.tt.gestaoclientes.dto.ClienteDTO;
+import br.com.aula2.tt.gestaoclientes.dto.*;
 import br.com.aula2.tt.gestaoclientes.entities.Cliente;
+import br.com.aula2.tt.gestaoclientes.entities.Pedido;
+import br.com.aula2.tt.gestaoclientes.entities.Produto;
+import br.com.aula2.tt.gestaoclientes.utils.Id;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,31 +15,107 @@ public class ClienteDAO {
 
     public static Cliente clienteDtoToEntity(ClienteDTO clienteDTO) {
         return new Cliente(
-                (long) clientes.size() + 1,
+                Id.generateIDCliente(),
                 clienteDTO.getNome(),
                 clienteDTO.getCpf(),
                 clienteDTO.getEmail(),
                 clienteDTO.getTelefone(),
-                clienteDTO.getPedidos()
+                pedidoDtoToEntity(clienteDTO.getPedidos())
         );
     }
 
-    public static ClienteDTO entityToDTO(Cliente cliente) {
-        return new ClienteDTO(
+    public static ClienteResponseDTO entityToDTO(Cliente cliente) {
+        return new ClienteResponseDTO(
                 cliente.getCpf(),
                 cliente.getNome(),
                 cliente.getEmail(),
                 cliente.getTelefone(),
-                cliente.getPedidos()
+                entityToPedidoResponseDTO(cliente.getPedidos())
         );
     }
 
-    public static List<ClienteDTO> entityToDTO(List<Cliente> cliente) {
-        List<ClienteDTO> clienteDTOS = new ArrayList<>();
+    public static List<ClienteResponseDTO> entityToDTO(List<Cliente> cliente) {
+        List<ClienteResponseDTO> clienteDTOS = new ArrayList<>();
 
-        cliente.forEach(c -> clienteDTOS.add(entityToDTO(c)));
+        for (Cliente c: cliente) {
+            clienteDTOS.add(entityToDTO(c));
+        }
 
         return clienteDTOS;
+    }
+
+    public static Pedido pedidoDtoToEntity(PedidoDTO pedidoDTO) {
+        return new Pedido(
+                Id.generateIDPedido(),
+                produtoDtoToEntity(pedidoDTO.getProdutos()),
+                totalPedido(pedidoDTO.getProdutos())
+        );
+    }
+
+    public static List<Pedido> pedidoDtoToEntity(List<PedidoDTO> pedidoDTOS) {
+        List<Pedido> pedidos = new ArrayList<>();
+
+        for (PedidoDTO pedidoDTO : pedidoDTOS) {
+            pedidos.add(pedidoDtoToEntity(pedidoDTO));
+        }
+
+        return pedidos;
+    }
+
+    public static PedidoResponseDTO entityToPedidoResponseDTO(Pedido pedido) {
+        return new PedidoResponseDTO(
+                entityToProdutoDTO(pedido.getProdutos()),
+                pedido.getTotal()
+        );
+    }
+
+    public static List<PedidoResponseDTO> entityToPedidoResponseDTO(List<Pedido> pedidos) {
+        List<PedidoResponseDTO> pedidoResponseDTOS = new ArrayList<>();
+
+        for (Pedido pedido : pedidos) {
+            pedidoResponseDTOS.add(entityToPedidoResponseDTO(pedido));
+        }
+
+        return pedidoResponseDTOS;
+    }
+
+    public static Produto produtoDtoToEntity(ProdutoDTO produtoDTO) {
+        return new Produto(
+                Id.generateIDProduto(),
+                produtoDTO.getDescricao(),
+                produtoDTO.getCor(),
+                produtoDTO.getQuantidade(),
+                produtoDTO.getPreco()
+        );
+    }
+
+    public static List<Produto> produtoDtoToEntity(List<ProdutoDTO> produtoDTOS) {
+        List<Produto> produtos = new ArrayList<>();
+
+        for (ProdutoDTO produtoDTO : produtoDTOS) {
+            produtos.add(produtoDtoToEntity(produtoDTO));
+        }
+
+        return produtos;
+    }
+
+    public static ProdutoDTO entityToProdutoDTO(Produto produto) {
+        return new ProdutoDTO(
+                produto.getDescricao(),
+                produto.getCor(),
+                produto.getQuantidade(),
+                produto.getPreco()
+        );
+    }
+
+    public static List<ProdutoDTO> entityToProdutoDTO(List<Produto> produtos) {
+        List<ProdutoDTO> produtoDTOS = new ArrayList<>();
+
+        for (Produto produto : produtos) {
+            produtoDTOS.add(entityToProdutoDTO(produto));
+        }
+
+        return produtoDTOS;
     }
 
     public Cliente addCliente(ClienteDTO clienteDTO) {
@@ -45,11 +124,11 @@ public class ClienteDAO {
         return cliente;
     }
 
-    public List<ClienteDTO> findAll() {
+    public List<ClienteResponseDTO> findAll() {
         return entityToDTO(clientes);
     }
 
-    public ClienteDTO findClient(String cpf) {
+    public ClienteResponseDTO findClient(String cpf) {
         Optional<Cliente> clienteOptional = clientes.stream().filter(cliente -> cliente.getCpf().equals(cpf)).findAny();
 
         if(clienteOptional.isPresent()) {
@@ -59,13 +138,13 @@ public class ClienteDAO {
         return null;
     }
 
-    public ClienteDTO findClient(long id) {
-        Optional<Cliente> clienteOptional = clientes.stream().filter(cliente -> cliente.getId() == id).findAny();
+    private static double totalPedido(List<ProdutoDTO> produtoDTOS) {
+        double total = 0;
 
-        if(clienteOptional.isPresent()) {
-            return entityToDTO(clienteOptional.get());
+        for (ProdutoDTO produtoDTO : produtoDTOS) {
+            total += produtoDTO.getPreco() * produtoDTO.getQuantidade();
         }
 
-        return null;
+        return total;
     }
 }
