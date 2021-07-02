@@ -4,14 +4,14 @@ import br.com.aula2.tt.gestaoclientes.entities.Pedido;
 
 import java.util.List;
 
-public class ClienteDTO {
+public class ClienteResponseDTO {
     private String nome;
     private String cpf;
     private String email;
     private String telefone;
-    private List<PedidoDTO> pedidos;
+    private List<PedidoResponseDTO> pedidos;
 
-    public ClienteDTO(String nome, String cpf, String email, String telefone, List<PedidoDTO> pedidos) {
+    public ClienteResponseDTO(String nome, String cpf, String email, String telefone, List<PedidoResponseDTO> pedidos) {
         this.nome = nome;
         this.cpf = cpf;
         this.email = email;
@@ -19,7 +19,7 @@ public class ClienteDTO {
         this.pedidos = pedidos;
     }
 
-    public ClienteDTO() {
+    public ClienteResponseDTO() {
     }
 
     public String getNome() {
@@ -54,11 +54,11 @@ public class ClienteDTO {
         this.telefone = telefone;
     }
 
-    public List<PedidoDTO> getPedidos() {
+    public List<PedidoResponseDTO> getPedidos() {
         return pedidos;
     }
 
-    public void setPedidos(List<PedidoDTO> pedidos) {
+    public void setPedidos(List<PedidoResponseDTO> pedidos) {
         this.pedidos = pedidos;
     }
 }
