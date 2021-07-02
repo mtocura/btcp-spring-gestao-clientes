@@ -39,11 +39,17 @@ public class ClienteDAO {
         return clienteDTOS;
     }
 
-    public void addCliente(ClienteDTO clienteDTO) {
-        clientes.add(clienteDtoToEntity(clienteDTO));
+    public Cliente addCliente(ClienteDTO clienteDTO) {
+        Cliente cliente = clienteDtoToEntity(clienteDTO);
+        clientes.add(cliente);
+        return cliente;
     }
 
-    public ClienteDTO pedidos(String cpf) {
+    public List<ClienteDTO> findAll() {
+        return entityToDTO(clientes);
+    }
+
+    public ClienteDTO findClient(String cpf) {
         Optional<Cliente> clienteOptional = clientes.stream().filter(cliente -> cliente.getCpf().equals(cpf)).findAny();
 
         if(clienteOptional.isPresent()) {
@@ -53,7 +59,7 @@ public class ClienteDAO {
         return null;
     }
 
-    public ClienteDTO pedidos(long id) {
+    public ClienteDTO findClient(long id) {
         Optional<Cliente> clienteOptional = clientes.stream().filter(cliente -> cliente.getId() == id).findAny();
 
         if(clienteOptional.isPresent()) {
